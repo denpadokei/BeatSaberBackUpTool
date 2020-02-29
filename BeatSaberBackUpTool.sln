@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.87
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatSaberBackUpTool", "BeatSaberBackUpTool\BeatSaberBackUpTool.csproj", "{4EA6E9B6-D97C-4AD6-A145-23C65B427C07}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4EA6E9B6-D97C-4AD6-A145-23C65B427C07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EA6E9B6-D97C-4AD6-A145-23C65B427C07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EA6E9B6-D97C-4AD6-A145-23C65B427C07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EA6E9B6-D97C-4AD6-A145-23C65B427C07}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0EA8DCEB-E5C3-411D-AE1C-42E2A8E9F487}
+	EndGlobalSection
+EndGlobal
