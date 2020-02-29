@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="BeatSaberBackUpTool.Views.MainView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:material="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:enums="clr-namespace:BeatSaberBackUpTool.Enums"
+             xmlns:viewmodel="clr-namespace:BeatSaberBackUpTool.ViewModels"
+             xmlns:converter="clr-namespace:BeatSaberBackUpTool.Converters"
+             xmlns:action="clr-namespace:BeatSaberBackUpTool.Actions"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:prism="http://prismlibrary.com/"             
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             Width="644" Height="341"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance {x:Type viewmodel:MainViewModel}, IsDesignTimeCreatable=True}"
+             FontFamily="{DynamicResource MaterialDesignFont}" d:DesignWidth="341" d:DesignHeight="644">
+    <b:Interaction.Triggers>
+        <b:EventTrigger>
+            <action:DataContextInitialize />
+        </b:EventTrigger>
+    </b:Interaction.Triggers>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <converter:BoolConverter x:Key="BoolConv" />
+            <BooleanToVisibilityConverter x:Key="BoolVisConv"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid IsEnabled="{Binding IsCreating, Converter={StaticResource BoolConv}}">
+        <StackPanel VerticalAlignment="Center">
+            <TextBox Margin="30" Text="{Binding FromDirectory}" IsReadOnly="True" material:HintAssist.HelperText="保存するフォルダ" />
+            <TextBox Margin="30" Text="{Binding ToDirectory}" IsReadOnly="True" material:HintAssist.HelperText="保存先" />
+            <WrapPanel HorizontalAlignment="Right">
+                <Button Content="バックアップ先を選ぶ" Command="{Binding OpenDirectoryCommand}" CommandParameter="{x:Static enums:CommandType.To}" Margin="20" />
+                <Button Content="バックアップ元を選ぶ" Command="{Binding OpenDirectoryCommand}" CommandParameter="{x:Static enums:CommandType.From}" Margin="20" />
+                <Button Content="バックアップ！" Command="{Binding BackUpCommand}" Margin="20"/>
+            </WrapPanel>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding IsCreating, Converter={StaticResource BoolVisConv}}" Text="{Binding ResultMessege}" />
+        </StackPanel>
+    </Grid>
+</UserControl>
