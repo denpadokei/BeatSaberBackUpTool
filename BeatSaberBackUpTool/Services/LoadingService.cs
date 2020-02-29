@@ -1,52 +1,23 @@
 ﻿using BeatSaberBackUpTool.Interfaces;
 using BeatSaberBackUpTool.Views;
-using NLog;
-using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using System;
 using System.Collections.Generic;
-using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Threading;
 using Unity;
 
-namespace BeatSaberBackUpTool.Models
+namespace BeatSaberBackUpTool.Services
 {
-    public class MainWindowDomain : BindableBase
+    public class LoadingService : ILoadingService
     {
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プロパティ
-        /// <summary>保存元 を取得、設定</summary>
-        private string fromPass_;
-        /// <summary>保存元 を取得、設定</summary>
-        public string FromPass
-        {
-            get { return this.fromPass_; }
-            set { this.SetProperty(ref this.fromPass_, value); }
-        }
-
-        /// <summary>保存先 を取得、設定</summary>
-        private string toPass_;
-        /// <summary>保存先 を取得、設定</summary>
-        public string ToPass
-        {
-            get { return this.toPass_; }
-            set { this.SetProperty(ref this.toPass_, value); }
-        }
-
-        private Logger Logger => LogManager.GetCurrentClassLogger();
-        /// <summary>作成中かどうか を取得、設定</summary>
-        private bool isCreating_;
-        /// <summary>作成中かどうか を取得、設定</summary>
-        public bool IsCreating
-        {
-            get { return this.isCreating_; }
-            set { this.SetProperty(ref this.isCreating_, value); }
-        }
+        [Dependency]
+        public IDialogService dialogService_;
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // コマンド
@@ -65,35 +36,46 @@ namespace BeatSaberBackUpTool.Models
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // パブリックメソッド
-        /// <summary>
-        /// zip化します。成功ならtrue。失敗したらfalse。
-        /// </summary>
-        /// <returns></returns>
-        public bool Createzip()
+        public async void Create(Func<bool> func)
         {
-            this.IsCreating = true;
+            
             try {
-                ZipFile.CreateFromDirectory(this.FromPass, this.ToPass);
+                var result = false;
+                await Task.Run(() => {
+                    result = this.dispatcher_.InvokeAsync(func).Result;
+                });
+                if (result) {
+                    this.dialogService_?.ShowDialog(nameof(DialogView), new DialogParameters() { { "Messege", "作成完了！" } }, _ => { });
+                }
+                else {
+                    this.dialogService_?.ShowDialog(nameof(DialogView), new DialogParameters() { { "Messege", "作成に失敗しました。" } }, _ => { });
+                }
             }
             catch (Exception e) {
-                this.Logger.Error(e);
-                return false;
-                // throw e;
+                throw e;
             }
-            finally {
-                this.IsCreating = false;
-            }
-            return true;
         }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // メンバ変数
+        private readonly Dispatcher dispatcher_;
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // 構築・破棄
-        public MainWindowDomain()
+        public LoadingService()
         {
-            this.IsCreating = false;
+            // スレッドを起動して、そこで dispatcher を実行する
+            var dispatcherSource = new TaskCompletionSource<Dispatcher>();
+            var thread = new Thread(new ThreadStart(() =>
+            {
+                dispatcherSource.SetResult(Dispatcher.CurrentDispatcher);
+                Dispatcher.Run();
+            }));
+            thread.Start();
+            this.dispatcher_ = dispatcherSource.Task.Result; // メンバ変数に dispatcher を保存
+
+            // 表のディスパッチャーが終了するタイミングで、こちらのディスパッチャーも終了する
+            Dispatcher.CurrentDispatcher.ShutdownStarted += (s, e) => this.dispatcher_.BeginInvokeShutdown(DispatcherPriority.Normal);
         }
         #endregion
     }

@@ -72,7 +72,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Actions\DataContextInitialize.cs" />
-    <Compile Include="Actions\FrameworkElement.cs" />
     <Compile Include="Actions\OpenFolderBrowserAction.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -81,7 +80,9 @@
     <Compile Include="Converters\BoolConverter.cs" />
     <Compile Include="Enums\Enums.cs" />
     <Compile Include="Interfaces\IInitializable.cs" />
+    <Compile Include="Interfaces\ILoadingService.cs" />
     <Compile Include="Models\MainWindowDomain.cs" />
+    <Compile Include="Services\LoadingService.cs" />
     <Compile Include="ViewModels\DialogViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />

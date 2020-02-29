@@ -9,12 +9,11 @@
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:prism="http://prismlibrary.com/"             
              prism:ViewModelLocator.AutoWireViewModel="True"
-             Width="644" Height="341"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type viewmodel:MainViewModel}, IsDesignTimeCreatable=True}"
-             FontFamily="{DynamicResource MaterialDesignFont}" d:DesignWidth="341" d:DesignHeight="644">
+             FontFamily="{DynamicResource MaterialDesignFont}" d:DesignWidth="644" d:DesignHeight="341">
     <b:Interaction.Triggers>
         <b:EventTrigger>
             <action:DataContextInitialize />
@@ -31,8 +30,8 @@
             <TextBox Margin="30" Text="{Binding FromDirectory}" IsReadOnly="True" material:HintAssist.HelperText="保存するフォルダ" />
             <TextBox Margin="30" Text="{Binding ToDirectory}" IsReadOnly="True" material:HintAssist.HelperText="保存先" />
             <WrapPanel HorizontalAlignment="Right">
-                <Button Content="バックアップ先を選ぶ" Command="{Binding OpenDirectoryCommand}" CommandParameter="{x:Static enums:CommandType.To}" Margin="20" />
                 <Button Content="バックアップ元を選ぶ" Command="{Binding OpenDirectoryCommand}" CommandParameter="{x:Static enums:CommandType.From}" Margin="20" />
+                <Button Content="バックアップ先を選ぶ" Command="{Binding OpenDirectoryCommand}" CommandParameter="{x:Static enums:CommandType.To}" Margin="20" />
                 <Button Content="バックアップ！" Command="{Binding BackUpCommand}" Margin="20"/>
             </WrapPanel>
             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding IsCreating, Converter={StaticResource BoolVisConv}}" Text="{Binding ResultMessege}" />

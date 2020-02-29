@@ -5,12 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:prism="http://prismlibrary.com/"
+        WindowStartupLocation="CenterScreen"
+        Width="644" Height="341"
         mc:Ignorable="d"
         prism:ViewModelLocator.AutoWireViewModel="True"
         d:DataContext="{d:DesignInstance {x:Type viewmodel:MainWindowViewModel}, IsDesignTimeCreatable=True}"
         Title="{Binding Title}"
         Background="{DynamicResource MaterialDesignPaper}"
-        FontFamily="{DynamicResource MaterialDesignFont}" d:DesignWidth="760.632" d:DesignHeight="500">
+        FontFamily="{DynamicResource MaterialDesignFont}" d:DesignWidth="644" d:DesignHeight="341">
     <Grid>
         <ContentControl prism:RegionManager.RegionName="MainRegion" />
     </Grid>

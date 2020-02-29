@@ -1,4 +1,6 @@
-﻿using BeatSaberBackUpTool.Views;
+﻿using BeatSaberBackUpTool.Interfaces;
+using BeatSaberBackUpTool.Services;
+using BeatSaberBackUpTool.Views;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
@@ -26,6 +28,7 @@ namespace BeatSaberBackUpTool
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
+            containerRegistry.Register<ILoadingService, LoadingService>();
             containerRegistry.RegisterDialog<DialogView>();
         }
     }

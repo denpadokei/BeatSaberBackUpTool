@@ -21,7 +21,10 @@ namespace BeatSaberBackUpTool.ViewModels
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プロパティ
         [Dependency]
-        public IDialogService dialogService;
+        public IDialogService dialogService_;
+        [Dependency]
+        public ILoadingService loadingService_;
+
         /// <summary>バックアップ元 を取得、設定</summary>
         private string fromDirectory_;
         /// <summary>バックアップ元 を取得、設定</summary>
@@ -97,16 +100,8 @@ namespace BeatSaberBackUpTool.ViewModels
         }
         private void CreateZip()
         {
-            var result = false;
-            var tasks = new List<Task>(){
-                Task.Run(() => {
-                    result = this.domain_.Createzip();
-                })
-            };
-            Task.WaitAll(tasks.ToArray());
-            if (result) {
-                this.dialogService.ShowDialog(nameof(DialogView), new DialogParameters() { {"Messege","作成を始めました。"} }, _ => { });
-            }
+            this.dialogService_.ShowDialog(nameof(DialogView), new DialogParameters() { { "Messege", "作成を始めました。" } }, _ => { });
+            this.loadingService_.Create(this.domain_.Createzip);
         }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
@@ -127,11 +122,6 @@ namespace BeatSaberBackUpTool.ViewModels
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プライベートメソッド
-        private async void Load(Action<bool> action)
-        {
-            await App.Current.Dispatcher.BeginInvoke(action);
-        }
-
         public void Initialize()
         {
             this.FromDirectory = Properties.Settings.Default.BackUpFromDirectory;
@@ -157,6 +147,7 @@ namespace BeatSaberBackUpTool.ViewModels
         {
             this.domain_ = new MainWindowDomain();
             this.domain_.PropertyChanged += this.OnDomainPropertyChanged;
+            
             this.IsCreating = false;
             this.ResultMessege = "作成中です。しばらくお待ちください。";
         }
