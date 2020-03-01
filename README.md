@@ -1,2 +1,2 @@
 # BeatSaberBackUpTool
-BeatSabaerのバックアップ取るやつ（単にzipにするだけ）
+BeatSaberのバックアップ取るやつ（単にzipにするだけ）
