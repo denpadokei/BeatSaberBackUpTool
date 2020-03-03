@@ -2,6 +2,7 @@
 using BeatSaberBackUpTool.Interfaces;
 using BeatSaberBackUpTool.Models;
 using BeatSaberBackUpTool.Views;
+using NLog;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
@@ -24,6 +25,8 @@ namespace BeatSaberBackUpTool.ViewModels
         public IDialogService dialogService_;
         [Dependency]
         public ILoadingService loadingService_;
+
+        public Logger Logger => LogManager.GetCurrentClassLogger();
 
         /// <summary>バックアップ元 を取得、設定</summary>
         private string fromDirectory_;
@@ -86,10 +89,12 @@ namespace BeatSaberBackUpTool.ViewModels
                         case CommandType.From:
                             this.FromDirectory = window.SelectedPath;
                             Properties.Settings.Default.BackUpFromDirectory = window.SelectedPath;
+                            this.Logger.Info("保存元を指定しました。");
                             break;
                         case CommandType.To:
                             this.ToDirectory = window.SelectedPath;
                             Properties.Settings.Default.BackUpToDirectory = window.SelectedPath;
+                            this.Logger.Info("保存先を指定しました。");
                             break;
                         default:
                             break;
@@ -101,6 +106,7 @@ namespace BeatSaberBackUpTool.ViewModels
         private void CreateZip()
         {
             this.dialogService_.ShowDialog(nameof(DialogView), new DialogParameters() { { "Messege", "作成を始めました。" } }, _ => { });
+            this.Logger.Info("作成を開始しました。");
             this.loadingService_.Create(this.domain_.Createzip);
         }
         #endregion

@@ -40,11 +40,9 @@ namespace BeatSaberBackUpTool.Services
         {
             
             try {
-                var result = false;
-                await Task.Run(() => {
-                    result = this.dispatcher_.InvokeAsync(func).Result;
-                });
-                if (result) {
+                var result = await this.dispatcher_.InvokeAsync(() => func?.Invoke());
+                
+                if (result == true) {
                     this.dialogService_?.ShowDialog(nameof(DialogView), new DialogParameters() { { "Messege", "作成完了！" } }, _ => { });
                 }
                 else {

@@ -82,6 +82,7 @@ namespace BeatSaberBackUpTool.Models
             }
             finally {
                 this.IsCreating = false;
+                this.Logger.Info("作成終了しました。");
             }
             return true;
         }
