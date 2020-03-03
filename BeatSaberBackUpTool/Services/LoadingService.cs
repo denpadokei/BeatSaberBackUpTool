@@ -1,5 +1,6 @@
 ﻿using BeatSaberBackUpTool.Interfaces;
 using BeatSaberBackUpTool.Views;
+using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -12,12 +13,21 @@ using Unity;
 
 namespace BeatSaberBackUpTool.Services
 {
-    public class LoadingService : ILoadingService
+    public class LoadingService : BindableBase, ILoadingService
     {
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プロパティ
         [Dependency]
         public IDialogService dialogService_;
+
+        /// <summary>作成中かどうか を取得、設定</summary>
+        private bool isCreating_;
+        /// <summary>作成中かどうか を取得、設定</summary>
+        public bool IsCreating
+        {
+            get { return this.isCreating_; }
+            set { this.SetProperty(ref this.isCreating_, value); }
+        }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // コマンド
@@ -33,13 +43,32 @@ namespace BeatSaberBackUpTool.Services
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // プライベートメソッド
+        private void StartCreate()
+        {
+            lock (this.lockingObject_) {
+                this.creatCounter_++;
+                this.IsCreating = true;
+            }
+        }
+
+        private void EndCreate()
+        {
+            lock (this.lockingObject_) {
+                this.creatCounter_--;
+                if (this.creatCounter_ == 0) {
+                    this.IsCreating = false;
+                }
+            }
+        }
+
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // パブリックメソッド
         public async void Create(Func<bool> func)
         {
-            
             try {
+                this.StartCreate();
+
                 var result = await this.dispatcher_.InvokeAsync(() => func?.Invoke());
                 
                 if (result == true) {
@@ -52,16 +81,23 @@ namespace BeatSaberBackUpTool.Services
             catch (Exception e) {
                 throw e;
             }
+            finally {
+                this.EndCreate();
+            }
         }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // メンバ変数
+        private int creatCounter_;
+        private readonly Object lockingObject_ = new Object();
         private readonly Dispatcher dispatcher_;
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // 構築・破棄
         public LoadingService()
         {
+            this.IsCreating = false;
+
             // スレッドを起動して、そこで dispatcher を実行する
             var dispatcherSource = new TaskCompletionSource<Dispatcher>();
             var thread = new Thread(new ThreadStart(() =>

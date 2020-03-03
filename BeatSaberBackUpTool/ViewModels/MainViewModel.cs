@@ -1,6 +1,7 @@
 ﻿using BeatSaberBackUpTool.Enums;
 using BeatSaberBackUpTool.Interfaces;
 using BeatSaberBackUpTool.Models;
+using BeatSaberBackUpTool.Services;
 using BeatSaberBackUpTool.Views;
 using NLog;
 using Prism.Commands;
@@ -12,6 +13,7 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Forms;
 using Unity;
 
@@ -132,12 +134,15 @@ namespace BeatSaberBackUpTool.ViewModels
         {
             this.FromDirectory = Properties.Settings.Default.BackUpFromDirectory;
             this.ToDirectory = Properties.Settings.Default.BackUpToDirectory;
+            WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.RemoveHandler(
+                this.loadingService_, nameof(INotifyPropertyChanged.PropertyChanged), this.OnLoadingServiceChanged);
+            WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(
+                this.loadingService_, nameof(INotifyPropertyChanged.PropertyChanged), this.OnLoadingServiceChanged);
         }
-
-        private void OnDomainPropertyChanged(Object sender, PropertyChangedEventArgs e)
+        private void OnLoadingServiceChanged(Object sender, PropertyChangedEventArgs e)
         {
-            if (sender is MainWindowDomain domain && e.PropertyName == nameof(domain.IsCreating)) {
-                this.IsCreating = domain.IsCreating;
+            if (sender is LoadingService service && e.PropertyName == nameof(service.IsCreating)) {
+                this.IsCreating = service.IsCreating;
             }
         }
         #endregion
@@ -152,8 +157,6 @@ namespace BeatSaberBackUpTool.ViewModels
         public MainViewModel()
         {
             this.domain_ = new MainWindowDomain();
-            this.domain_.PropertyChanged += this.OnDomainPropertyChanged;
-            
             this.IsCreating = false;
             this.ResultMessege = "作成中です。しばらくお待ちください。";
         }

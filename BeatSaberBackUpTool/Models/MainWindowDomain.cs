@@ -39,14 +39,6 @@ namespace BeatSaberBackUpTool.Models
         }
 
         private Logger Logger => LogManager.GetCurrentClassLogger();
-        /// <summary>作成中かどうか を取得、設定</summary>
-        private bool isCreating_;
-        /// <summary>作成中かどうか を取得、設定</summary>
-        public bool IsCreating
-        {
-            get { return this.isCreating_; }
-            set { this.SetProperty(ref this.isCreating_, value); }
-        }
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // コマンド
@@ -71,7 +63,6 @@ namespace BeatSaberBackUpTool.Models
         /// <returns></returns>
         public bool Createzip()
         {
-            this.IsCreating = true;
             try {
                 ZipFile.CreateFromDirectory(this.FromPass, this.ToPass);
             }
@@ -81,7 +72,6 @@ namespace BeatSaberBackUpTool.Models
                 // throw e;
             }
             finally {
-                this.IsCreating = false;
                 this.Logger.Info("作成終了しました。");
             }
             return true;
@@ -94,7 +84,7 @@ namespace BeatSaberBackUpTool.Models
         #region // 構築・破棄
         public MainWindowDomain()
         {
-            this.IsCreating = false;
+            
         }
         #endregion
     }
