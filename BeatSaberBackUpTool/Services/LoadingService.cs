@@ -1,5 +1,6 @@
 ﻿using BeatSaberBackUpTool.Interfaces;
 using BeatSaberBackUpTool.Views;
+using NLog;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using System;
@@ -28,6 +29,8 @@ namespace BeatSaberBackUpTool.Services
             get { return this.isCreating_; }
             set { this.SetProperty(ref this.isCreating_, value); }
         }
+
+        private Logger Logger => LogManager.GetCurrentClassLogger();
         #endregion
         //ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*ﾟ+｡｡+ﾟ*｡+ﾟ ﾟ+｡*
         #region // コマンド
@@ -79,6 +82,8 @@ namespace BeatSaberBackUpTool.Services
                 }
             }
             catch (Exception e) {
+                this.Logger.Error(e);
+                this.dialogService_?.ShowDialog(nameof(DialogView), new DialogParameters() { { "Messege", "エラーが発生しました。\n詳しくはログを確認してください。" } }, _ => { });
                 throw e;
             }
             finally {
