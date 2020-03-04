@@ -3,6 +3,7 @@ using BeatSaberBackUpTool.Interfaces;
 using BeatSaberBackUpTool.Models;
 using BeatSaberBackUpTool.Services;
 using BeatSaberBackUpTool.Views;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using NLog;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -85,17 +86,17 @@ namespace BeatSaberBackUpTool.ViewModels
         private void OpenDirectoryWindow(object param)
         {
             if (param is CommandType type) {
-                var window = new FolderBrowserDialog();
-                if (window.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                var window = new CommonOpenFileDialog() { IsFolderPicker = true };
+                if (window.ShowDialog() == CommonFileDialogResult.Ok) {
                     switch (type) {
                         case CommandType.From:
-                            this.FromDirectory = window.SelectedPath;
-                            Properties.Settings.Default.BackUpFromDirectory = window.SelectedPath;
+                            this.FromDirectory = window.FileName;
+                            Properties.Settings.Default.BackUpFromDirectory = window.FileName;
                             this.Logger.Info("保存元を指定しました。");
                             break;
                         case CommandType.To:
-                            this.ToDirectory = window.SelectedPath;
-                            Properties.Settings.Default.BackUpToDirectory = window.SelectedPath;
+                            this.ToDirectory = window.FileName;
+                            Properties.Settings.Default.BackUpToDirectory = window.FileName;
                             this.Logger.Info("保存先を指定しました。");
                             break;
                         default:
